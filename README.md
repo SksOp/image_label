@@ -3,7 +3,7 @@ This repository contains a Streamlit Custom Component developed with React. The 
 
 The `image_label` package provides a custom Streamlit component for image annotation. It allows users to manually annotate images with bounding boxes and labels, making it a great tool for data labeling tasks, especially in machine learning projects.
 
-![]("https://github.com/SksOp/image_label/tree/main/assets/example.gif")
+![]("https://github.com/SksOp/image_label/blob/main/assets/example.gif")
 
 ### Features
 Streamlit Custom Component that annotates images with bounding boxes and labels.
