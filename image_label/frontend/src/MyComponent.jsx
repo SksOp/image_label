@@ -3,7 +3,7 @@ import {
   StreamlitComponentBase,
   withStreamlitConnection,
 } from "streamlit-component-lib"
-import React, { Component } from "react"
+import React, { Component, useState, useEffect } from "react"
 import "./label-image.css"
 
 // import Button from "./Button"
@@ -212,6 +212,40 @@ function renderEditor(props, labels) {
   )
 }
 
+const DataDiv = ({ annotations, labels }) => {
+  // we will create a table here
+  const [data, setData] = useState({})
+
+  useEffect(() => {
+    const tempData = {}
+    labels.forEach((label) => {
+      tempData[label] = 0
+    })
+    annotations.forEach((annotation) => {
+      const { data } = annotation
+      const { text } = data
+      const frquency = tempData[text] ? tempData[text] + 1 : 1
+      tempData[text] = frquency
+    })
+    setData(tempData)
+    console.log({ tempData })
+  }, [annotations])
+  return (
+    <>
+      <div className="dataHolder">
+        {Object.keys(data).map((key) => {
+          return (
+            <div className="dataItem" key={key}>
+              <div className="dataItemLabel">{key}</div>
+              <div className="dataItemValue">{data[key]}</div>
+            </div>
+          )
+        })}
+      </div>
+    </>
+  )
+}
+
 class MyComponent extends Component {
   // state = {
   //   annotations: [],
@@ -223,9 +257,28 @@ class MyComponent extends Component {
     this.state = {
       annotations: [...this.props?.detectedAnotations],
       annotation: {},
+      showDiv: false,
+      coords: { x: 0, y: 0 },
     }
   }
   canvasRef = React.createRef()
+  moveDiv = (e) => {
+    this.setState({ coords: { x: e.clientX, y: e.clientY } })
+  }
+
+  onMouseMove = (e) => {
+    this.setState({ showDiv: true })
+    window.addEventListener("mousemove", this.moveDiv)
+  }
+
+  onMouseOut = (e) => {
+    this.setState({ showDiv: false })
+    window.removeEventListener("mousemove", this.moveDiv)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("mousemove", this.moveDiv)
+  }
 
   renderImageToCanvas = () => {
     return new Promise((resolve) => {
@@ -299,6 +352,7 @@ class MyComponent extends Component {
       }),
     })
   }
+
   downloadImage = async () => {
     // First, render the image to the canvas
     await this.renderImageToCanvas()
@@ -320,34 +374,58 @@ class MyComponent extends Component {
     const imageSrc = "data:image/jpeg;base64," + this.props.image
 
     return (
-      <div>
-        <Annotation
-          src={imageSrc}
-          alt="pcb"
-          annotations={this.state.annotations}
-          type={this.state.type}
-          value={this.state.annotation}
-          onChange={this.onChange}
-          onSubmit={this.onSubmit}
-          renderEditor={(props) => {
-            const labels = this.props.labels
-            return renderEditor(props, labels)
-          }}
-          renderContent={renderContent}
-          renderHighlight={({ annotation, active }) => {
-            return renderHighlight({
-              annotation,
-              active,
-              deleteAnnotation: this.deleteAnnotation,
-            })
-          }}
-        />
+      <>
+        <div
+          className="hoverDiv"
+          onMouseMove={this.onMouseMove}
+          onMouseOut={this.onMouseOut}
+        >
+          <Annotation
+            src={imageSrc}
+            alt="pcb"
+            annotations={this.state.annotations}
+            type={this.state.type}
+            value={this.state.annotation}
+            onChange={this.onChange}
+            onSubmit={this.onSubmit}
+            renderEditor={(props) => {
+              const labels = this.props.labels
+              return renderEditor(props, labels)
+            }}
+            renderContent={renderContent}
+            renderHighlight={({ annotation, active }) => {
+              return renderHighlight({
+                annotation,
+                active,
+                deleteAnnotation: this.deleteAnnotation,
+              })
+            }}
+          />
+          {this.state.showDiv && (
+            <div
+              className="hover-info"
+              style={{
+                top: `${this.state.coords.y + 30}px`,
+                left: `${this.state.coords.x + 30}px`,
+              }}
+              // style={{
+              //   top: `${50}px`,
+              //   left: `${20}px`,
+              // }}
+            >
+              <DataDiv
+                labels={this.props.labels}
+                annotations={this.state.annotations}
+              />
+            </div>
+          )}
+        </div>
         <button className="downloadButton" onClick={this.downloadImage}>
           Download
         </button>
 
         <canvas ref={this.canvasRef} style={{ display: "none" }} />
-      </div>
+      </>
     )
   }
 }

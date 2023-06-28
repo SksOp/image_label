@@ -1,9 +1,12 @@
 Metadata-Version: 2.1
 Name: image-label
-Version: 2.3.88
-Home-page: 
+Version: 2.4.2
+Summary: This is an Image Labeling Component for streamlit
+Home-page: https://github.com/SksOp/image_label
 Author: sks
 Author-email: shubhaman47@gmail.com
 Requires-Python: >=3.6
 Description-Content-Type: text/plain
 License-File: LICENSE
+
+The image_label package provides a custom Streamlit component for image annotation. It allows users to manually annotate images with bounding boxes and labels, making it a great tool for data labeling tasks, especially in machine learning projects. for more info go to https://github.com/SksOp/image_label
