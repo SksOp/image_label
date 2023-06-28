@@ -1,0 +1,6 @@
+node_modules
+/image_label/frontend/node_modules
+
+/image_label/frontend/build
+dist
+build

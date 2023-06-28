@@ -1,0 +1,134 @@
+.selectItem {
+  width: 100%;
+  border: 0px;
+  border-bottom: 1px solid #ccc;
+  padding: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  background: #fff;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+}
+.selectItem:focus {
+  border-bottom: 1px solid #333;
+}
+.selectItem:focus-visible {
+  outline: none;
+}
+
+.selectItem option {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  background: #fff;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.selectItem option:hover {
+  background: #ccc;
+}
+
+.selectItem option:focus {
+  background: #ccc;
+}
+
+.selectItem option:focus-visible {
+  outline: none;
+}
+
+/* making the option holder border radius 10 px */
+.selectItem select {
+  border-radius: 10px;
+}
+
+.addLabelButton {
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.addLabelButton:hover {
+  background-color: #3e8e41;
+  cursor: pointer;
+}
+
+.addLabelButton:focus {
+  outline: none;
+}
+
+.addLabelButton:focus-visible {
+  outline: none;
+}
+
+/* style={{
+    background: "rgba(0, 0, 0, 0.3)",
+    borderRadius: 3,
+    position: "absolute",
+    left: `0`,
+    top: `0`,
+    color: "black",
+    padding: "5px ",
+    display: "flex",
+    gap: "10px",
+    flexDirection: "column",
+    alignItems: "flex-end",
+    width: "100px"
+  }} */
+
+.holder {
+  border-radius: 5px;
+  position: absolute;
+  color: black;
+  padding: 5px;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 150px;
+  z-index: 100;
+}
+
+.deleteAnnotationButton {
+  background-color: rgb(105, 28, 28);
+  border: 2px solid #ff1100;
+  border-radius: 2px;
+  color: rgb(247, 244, 244);
+
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 7px;
+  position: absolute;
+  z-index: 1000;
+  right: -10px;
+  top: -10px;
+  font-weight: bold;
+}
+
+.downloadButton {
+  border: none;
+  margin: 10px 0;
+  background-color: rgb(21, 21, 21);
+  color: #4caf50;
+}
+
+.downloadButton:hover {
+  background-color: rgb(21, 21, 21);
+  color: #3e8e41;
+  cursor: pointer;
+}
+
+.downloadButton:focus {
+  outline: none;
+}
+
+.downloadButton:focus-visible {
+  outline: none;
+}
