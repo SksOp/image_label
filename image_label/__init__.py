@@ -8,7 +8,7 @@ import base64
 # the component, and True when we're ready to package and distribute it.
 # (This is, of course, optional - there are innumerable ways to manage your
 # release process.)
-_RELEASE = True
+_RELEASE = True 
 
 # Declare a Streamlit component. `declare_component` returns a function
 # that is used to create instances of the component. We're naming this
@@ -56,6 +56,11 @@ def img_to_base64(img):
     img.save(imgio, format=img.format)
     img_str = base64.b64encode(imgio.getvalue())
     return img_str.decode('utf-8')
+
+def img_str(image_path):
+    image = load_image(image_path)
+    image_str = img_to_base64(image)
+    return image_str
 
 def image_label(image,labels,detectedAnotations=[] ,key=None):
     # declare the component
@@ -107,6 +112,7 @@ def image_label(image,labels,detectedAnotations=[] ,key=None):
 # app: `$ streamlit run my_component/__init__.py`
 if not _RELEASE:
     import streamlit as st
+    st.set_page_config(page_title="label-img-dev", layout="wide",page_icon="assets/icon.png")
 
     st.subheader("Create label")
 
@@ -116,8 +122,9 @@ if not _RELEASE:
     # button = st.button("add label")
 
     labels = ["label1", "label2", "label3"]
+    annotations = [{"geometry": {"type": "RECTANGLE","x": 5,"y": 5,"width": 5,"height": 6},"data": {"text": "label1","id": 0.42675792821517256}},]
     # if button:
-    labels_in_yolo_format = image_label(image=image_str,labels=labels,detectedAnotations=[] ,key="foo")
+    labels_in_yolo_format = image_label(image=image_str,labels=labels,detectedAnotations=annotations ,key="foo")
     st.write(labels_in_yolo_format)
     print(labels_in_yolo_format)
 

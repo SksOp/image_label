@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="image_label",
-    version="2.4.2",
+    version="2.4.3",
     author="sks",
     author_email="shubhaman47@gmail.com",
     description="This is an Image Labeling Component for streamlit",

@@ -1,4 +1,5 @@
 # Image Label Component for Streamlit
+
 This repository contains a Streamlit Custom Component developed with React. The component allows users to add labels and bounding boxes to images. It's particularly useful for projects related to Image Labeling and Object Detection.
 
 The `image_label` package provides a custom Streamlit component for image annotation. It allows users to manually annotate images with bounding boxes and labels, making it a great tool for data labeling tasks, especially in machine learning projects.
@@ -6,6 +7,7 @@ The `image_label` package provides a custom Streamlit component for image annota
 ![](assets/example.gif)
 
 ### Features
+
 Streamlit Custom Component that annotates images with bounding boxes and labels.
 Annotations can be added interactively using the React component in the Streamlit app.
 Annotated images can be downloaded with bounding boxes and labels.
@@ -39,7 +41,8 @@ image_label_component(key=key, image=image_str, labels=labels, detectedAnotation
 
 - `load_image(imagePath)` is used to load the image from a given path.
 - `img_to_base64(image)` is used to convert the image to base64 format.
-- `image_label_component`  is the main function that displays the annotation component in your Streamlit app and let user to downlaod and edit the annotations.
+- `image_label_component` is the main function that displays the annotation component in your Streamlit app and let user to downlaod and edit the annotations.
+
 ### Arguments for image_label_component
 
 - `key` : A string that identifies the component in your app. Each component should have a unique key.
@@ -66,18 +69,20 @@ image_label_component(key=key, image=image_str, labels=labels, detectedAnotation
     ....
 ]
 ```
+
 > We will soon add function to convert yolo format to this format.
+
 ### In the above dictionary:
 
 - `geometry ` describes the bounding box and its position. The x and y values are the coordinates of the top left corner of the bounding box, relative to the top left corner of the image, expressed as a percentage of the image's dimensions. The width and height values are also percentages of the image's dimensions.
 
 - `data` contains additional information about the annotation. The text field is the label for the bounding box, and id is a unique identifier for the annotation.
 
-
 ## Contributing
 
- Contributions to this project are welcome! Please raise an issue on the project's GitHub page if you encounter any problems or have any suggestions for improvements.
-### Building and developing the package from this repo 
+Contributions to this project are welcome! Please raise an issue on the project's GitHub page if you encounter any problems or have any suggestions for improvements.
+
+### Building and developing the package from this repo
 
 ```bash
 cd image_label
@@ -86,15 +91,32 @@ nvm use 16
 npm install
 npm start
 ```
+
 From image_label directory
 
-> Inside __init__.py change RELEASE to False
-```
+> Inside **init**.py change RELEASE to False
+
 ```python
 _RELEASE = False
 ```
-then 
+
+then
+
 ```bash
 cd image_label
 streamlit run __init__.py
+```
+
+After developing to build the package
+
+```bash
+cd image_label
+python setup.py sdist bdist_wheel
+```
+
+To deploy to PyPI (requires twine)
+
+```bash
+cd image_label
+twine upload dist/*
 ```

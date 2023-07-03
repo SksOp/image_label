@@ -1,257 +1,25 @@
 import {
-  Streamlit,
+  // Streamlit,
   StreamlitComponentBase,
   withStreamlitConnection,
 } from "streamlit-component-lib"
-import React, { Component, useState, useEffect } from "react"
+import React, { Component } from "react"
 import "./label-image.css"
 
-// import Button from "./Button"
-
-// /**
-//  * This is a React-based component template. The `render()` function is called
-//  * automatically when your component should be re-rendered.
-//  */
-// class MyComponent extends StreamlitComponentBase {
-//   state = { numClicks: 0, isFocused: false }
-
-//   render = () => {
-//     // Arguments that are passed to the plugin in Python are accessible
-//     // via `this.props.args`. Here, we access the "name" arg.
-//     const name = this.props.args["name"]
-
-//     // Streamlit sends us a theme object via props that we can use to ensure
-//     // that our component has visuals that match the active theme in a
-//     // streamlit app.
-//     const { theme } = this.props
-//     const style = {}
-
-//     // Maintain compatibility with older versions of Streamlit that don't send
-//     // a theme object.
-//     if (theme) {
-//       // Use the theme object to style our button border. Alternatively, the
-//       // theme style is defined in CSS vars.
-//       const borderStyling = `1px solid ${
-//         this.state.isFocused ? theme.primaryColor : "gray"
-//       }`
-//       style.border = borderStyling
-//       style.outline = borderStyling
-//     }
-
-//     // Show a button and some text.
-//     // When the button is clicked, we'll increment our "numClicks" state
-//     // variable, and send its new value back to Streamlit, where it'll
-//     // be available to the Python program.
-//     return (
-//       <span>
-//         Hello, {name}! &nbsp;
-//         <button
-//           style={style}
-//           onClick={this.onClicked}
-//           disabled={this.props.disabled}
-//           onFocus={this._onFocus}
-//           onBlur={this._onBlur}
-//         >
-//           Click Me!
-//         </button>
-//       </span>
-//     )
-//   }
-
-//   /** Click handler for our "Click Me!" button. */
-//   onClicked = () => {
-//     // Increment state.numClicks, and pass the new value back to
-//     // Streamlit via `Streamlit.setComponentValue`.
-//     this.setState(
-//       (prevState) => ({ numClicks: prevState.numClicks + 1 }),
-//       () => Streamlit.setComponentValue(this.state.numClicks)
-//     )
-//   }
-
-//   /** Focus handler for our "Click Me!" button. */
-//   _onFocus = () => {
-//     this.setState({ isFocused: true })
-//   }
-
-//   /** Blur handler for our "Click Me!" button. */
-//   _onBlur = () => {
-//     this.setState({ isFocused: false })
-//   }
-// }
-
-// // "withStreamlitConnection" is a wrapper function. It bootstraps the
-// // connection between your component and the Streamlit app, and handles
-// // passing arguments from Python -> Component.
-// //
-// // You don't need to edit withStreamlitConnection (but you're welcome to!).
-// export default withStreamlitConnection(MyComponent)
-// import {
-//   Streamlit,
-//   StreamlitComponentBase,
-//   withStreamlitConnection,
-// } from "streamlit-component-lib"
-// import React from "react"
-
-// class MyComponent extends StreamlitComponentBase {
-//   state = { numClicks: 0, isFocused: false }
-
-//   render = () => {
-//     const props = this.props
-//     const { image, labels } = props.args
-//     console.log({ labels })
-//     // prepend the proper prefix for base64 encoded jpeg images
-//     const imageSrc = "data:image/jpeg;base64," + image
-//     console.log(props)
-//     return (
-//       <div>
-//         <img src={imageSrc} alt="My custom component image" width="100%" />
-//       </div>
-//     )
-//   }
-// }
-
-// export default withStreamlitConnection(MyComponent)
 import Annotation from "react-image-annotation"
+import {
+  renderHighlight,
+  renderContent,
+  renderEditor,
+  DataDiv,
+  ViewDataInTable,
+  Preview,
+} from "./utils/functions.jsx"
 
-const Box = ({ children, geometry, style }) => (
-  <div
-    style={{
-      ...style,
-      position: "absolute",
-      left: `${geometry.x}%`,
-      top: `${geometry.y}%`,
-      height: `${geometry.height}%`,
-      width: `${geometry.width}%`,
-    }}
-  >
-    {children}
-  </div>
-)
-
-function renderHighlight({ annotation, active, deleteAnnotation }) {
-  const { geometry } = annotation
-  if (!geometry) return null
-  return (
-    <Box
-      key={annotation.data.id}
-      geometry={geometry}
-      style={{
-        border: `solid 1px ${active ? "#3e8e41" : generateRandomHexCode()}`,
-        // boxShadow: active && "0 0 20px 20px rgba(255, 255, 255, 0.3) inset",
-      }}
-    >
-      {active && (
-        <button
-          className="deleteAnnotationButton"
-          onClick={() => {
-            console.log("delete")
-            deleteAnnotation(annotation.data.id)
-          }}
-        >
-          X
-        </button>
-      )}
-    </Box>
-  )
-}
-
-function renderContent({ annotation }) {
-  const { geometry } = annotation
-  return (
-    <div
-      key={annotation.data.id}
-      style={{
-        background: "black",
-        color: "white",
-        padding: 10,
-        position: "absolute",
-        fontSize: 12,
-        left: `${geometry.x}%`,
-        top: `${geometry.y + geometry.height}%`,
-      }}
-    >
-      {annotation.data && annotation.data.text}
-    </div>
-  )
-}
-function renderEditor(props, labels) {
-  const { geometry } = props.annotation
-  if (!geometry) return null
-  return (
-    <div
-      className="holder"
-      style={{
-        background: "rgba(0, 0, 0, 0.15)",
-        left: `${geometry.x > 80 ? 75 : geometry.x}%`,
-        top: `${geometry.y > 85 ? 85 : geometry.y}%`,
-      }}
-    >
-      <select
-        className="selectItem"
-        onChange={(e) => {
-          props.onChange({
-            ...props.annotation,
-            data: {
-              ...props.annotation.data,
-              text: e.target.value,
-            },
-          })
-        }}
-      >
-        <option value="">Select...</option>
-        {labels.map((label) => (
-          <option key={label} value={label}>
-            {label}
-          </option>
-        ))}
-      </select>
-      <button className="addLabelButton" onClick={props.onSubmit}>
-        Add
-      </button>
-    </div>
-  )
-}
-
-const DataDiv = ({ annotations, labels }) => {
-  // we will create a table here
-  const [data, setData] = useState({})
-
-  useEffect(() => {
-    const tempData = {}
-    labels.forEach((label) => {
-      tempData[label] = 0
-    })
-    annotations.forEach((annotation) => {
-      const { data } = annotation
-      const { text } = data
-      const frquency = tempData[text] ? tempData[text] + 1 : 1
-      tempData[text] = frquency
-    })
-    setData(tempData)
-    console.log({ tempData })
-  }, [annotations])
-  return (
-    <>
-      <div className="dataHolder">
-        {Object.keys(data).map((key) => {
-          return (
-            <div className="dataItem" key={key}>
-              <div className="dataItemLabel">{key}</div>
-              <div className="dataItemValue">{data[key]}</div>
-            </div>
-          )
-        })}
-      </div>
-    </>
-  )
-}
+import expand from "./assets/expand.svg"
+import shrink from "./assets/shrink.svg"
 
 class MyComponent extends Component {
-  // state = {
-  //   annotations: [],
-  //   annotation: {},
-  // }
-
   constructor(props) {
     super(props)
     this.state = {
@@ -259,9 +27,41 @@ class MyComponent extends Component {
       annotation: {},
       showDiv: false,
       coords: { x: 0, y: 0 },
+      isEditable: false,
+      showLabels: true,
+      isFullWidth: false,
+      enablePreview: false,
+      labelFontSize: 40,
+      labnelLineWidth: 5,
     }
   }
+
   canvasRef = React.createRef()
+  increaseLabelFontSize = () => {
+    this.setState({ labelFontSize: this.state.labelFontSize + 5 })
+  }
+  decreaseLabelFontSize = () => {
+    this.setState({ labelFontSize: this.state.labelFontSize - 5 })
+  }
+  increaseLabelLineWidth = () => {
+    this.setState({ labnelLineWidth: this.state.labnelLineWidth + 4 })
+  }
+  decreaseLabelLineWidth = () => {
+    this.setState({ labnelLineWidth: this.state.labnelLineWidth - 4 })
+  }
+
+  togglePreview = () => {
+    this.setState({ enablePreview: !this.state.enablePreview })
+  }
+  toggleLabels = () => {
+    this.setState({ showLabels: !this.state.showLabels })
+  }
+  enableEditing = () => {
+    this.setState({ isEditable: !this.state.isEditable })
+  }
+  toggleFullWidth = () => {
+    this.setState({ isFullWidth: !this.state.isFullWidth })
+  }
   moveDiv = (e) => {
     this.setState({ coords: { x: e.clientX, y: e.clientY } })
   }
@@ -280,7 +80,10 @@ class MyComponent extends Component {
     window.removeEventListener("mousemove", this.moveDiv)
   }
 
-  renderImageToCanvas = () => {
+  renderImageToCanvas = (
+    labelFontSize = this.state.labelFontSize,
+    labnelLineWidth = this.state.labnelLineWidth
+  ) => {
     return new Promise((resolve) => {
       const canvas = this.canvasRef.current
       const context = canvas.getContext("2d")
@@ -305,12 +108,37 @@ class MyComponent extends Component {
 
           context.beginPath()
           context.rect(px, py, pwidth, pheight)
-          context.lineWidth = 3
+          context.lineWidth = labnelLineWidth
           context.strokeStyle = "red"
-          context.fillStyle = "red"
+
           context.stroke()
-          context.font = "40px Arial" // Set the font size and font family
-          context.fillText(text, px, py > 15 ? py - 5 : py + 15)
+          context.fillStyle = "white"
+          context.font = `bold ${labelFontSize}px Roboto` // Set the font size and font family
+          context.fillText(
+            text,
+            px,
+            py > labelFontSize ? py - labnelLineWidth : py + labelFontSize
+          )
+
+          context.fillStyle = "black"
+          context.fillRect(
+            px,
+            (py > labelFontSize ? py - labnelLineWidth : py + labelFontSize) -
+              labelFontSize -
+              20,
+            context.measureText(text).width + 20,
+            labelFontSize + 20
+          )
+
+          context.fillStyle = "white"
+          context.font = `bold ${labelFontSize}px Roboto` // Set the font size and font family
+          context.fillText(
+            text,
+            px + 10,
+            py > labelFontSize
+              ? py - labnelLineWidth - 10
+              : py + labelFontSize - 10
+          )
         })
 
         // Resolve the Promise after the image has loaded and drawn
@@ -370,61 +198,119 @@ class MyComponent extends Component {
     // Trigger a click on the link to start the download
     link.click()
   }
+  preview = async () => {
+    await this.renderImageToCanvas()
+    this.setState({ enablePreview: true })
+  }
+
   render() {
     const imageSrc = "data:image/jpeg;base64," + this.props.image
 
     return (
       <>
-        <div
-          className="hoverDiv"
-          onMouseMove={this.onMouseMove}
-          onMouseOut={this.onMouseOut}
-        >
-          <Annotation
-            src={imageSrc}
-            alt="pcb"
-            annotations={this.state.annotations}
-            type={this.state.type}
-            value={this.state.annotation}
-            onChange={this.onChange}
-            onSubmit={this.onSubmit}
-            renderEditor={(props) => {
-              const labels = this.props.labels
-              return renderEditor(props, labels)
-            }}
-            renderContent={renderContent}
-            renderHighlight={({ annotation, active }) => {
-              return renderHighlight({
-                annotation,
-                active,
-                deleteAnnotation: this.deleteAnnotation,
-              })
-            }}
-          />
-          {this.state.showDiv && (
-            <div
-              className="hover-info"
-              style={{
-                top: `${this.state.coords.y + 30}px`,
-                left: `${this.state.coords.x + 30}px`,
-              }}
-              // style={{
-              //   top: `${50}px`,
-              //   left: `${20}px`,
-              // }}
-            >
-              <DataDiv
-                labels={this.props.labels}
-                annotations={this.state.annotations}
-              />
-            </div>
+        <div className="menu">
+          {this.state.isEditable ? (
+            <>
+              <button onClick={this.toggleLabels}>
+                {this.state.showLabels ? "Hide" : "Show"} Labels
+              </button>
+
+              <button onClick={this.downloadImage}>Download</button>
+              <button onClick={this.togglePreview}>
+                {this.state.enablePreview ? "Hide" : "Show"} Preview
+              </button>
+              <button onClick={this.toggleFullWidth}>
+                {this.state.isFullWidth ? (
+                  <img src={expand} alt="expnad" />
+                ) : (
+                  <img src={shrink} alt="shink" />
+                )}
+              </button>
+            </>
+          ) : (
+            <>
+              <button onClick={this.enableEditing}>Edit labels</button>
+            </>
           )}
         </div>
-        <button className="downloadButton" onClick={this.downloadImage}>
-          Download
-        </button>
+        <div className="parent">
+          <div
+            className="hoverDiv image-editor"
+            onMouseMove={this.onMouseMove}
+            onMouseOut={this.onMouseOut}
+            style={{
+              maxWidth: this.state.isFullWidth ? "unset" : "900px",
+            }}
+          >
+            <Annotation
+              src={imageSrc}
+              alt="pcb"
+              annotations={this.state.annotations}
+              type={this.state.type}
+              value={this.state.annotation}
+              onChange={this.onChange}
+              onSubmit={this.onSubmit}
+              disableEditor={!this.state.isEditable}
+              disableAnnotation={!this.state.isEditable}
+              disableSelector={!this.state.isEditable}
+              disableOverlay={!this.state.isEditable}
+              renderEditor={(props) => {
+                //there are default props too as per the docs
+                const labels = this.props.labels
+                return renderEditor(props, labels)
+              }}
+              renderContent={renderContent}
+              renderHighlight={({ annotation, active }) => {
+                return renderHighlight({
+                  annotation,
+                  active,
+                  showLabels: this.state.showLabels,
+                  deleteAnnotation: this.deleteAnnotation,
+                })
+              }}
+            />
+          </div>
+          <div className="dataViewer">
+            <ViewDataInTable
+              labels={this.props.labels}
+              annotations={this.state.annotations}
+            />
+          </div>
+        </div>
 
         <canvas ref={this.canvasRef} style={{ display: "none" }} />
+
+        {this.state.enablePreview && (
+          <Preview
+            increaseLabelFontSize={this.increaseLabelFontSize}
+            decreaseLabelFontSize={this.decreaseLabelFontSize}
+            labelFontSize={this.state.labelFontSize}
+            renderImageToCanvas={this.renderImageToCanvas}
+            togglePreview={this.togglePreview}
+            canvasRef={this.canvasRef}
+            labnelLineWidth={this.state.labnelLineWidth}
+            increaseLabelLineWidth={this.increaseLabelLineWidth}
+            decreaseLabelLineWidth={this.decreaseLabelLineWidth}
+          />
+        )}
+        {/* {this.state.showDiv && (
+              <div
+                className="hover-info"
+                style={{
+                  top: `${this.state.coords.y + 30}px`,
+                  left: `${this.state.coords.x + 30}px`,
+                }}
+                // style={{
+                //   top: `${50}px`,
+                //   left: `${20}px`,
+                // }}
+              >
+                <DataDiv
+                  labels={this.props.labels}
+                  annotations={this.state.annotations}
+                />
+              </div>
+            )} */}
       </>
     )
   }
@@ -445,21 +331,6 @@ class App extends StreamlitComponentBase {
 }
 
 export default withStreamlitConnection(App)
-
-function generateRandomHexCode() {
-  let hexCode = "#"
-
-  // Generate a random hex color code
-  for (let i = 0; i < 6; i++) {
-    // Generate a random number between 0 and 15, convert to hex
-    let hexSegment = Math.floor(Math.random() * 16).toString(16)
-
-    // Add the segment to the hex code
-    hexCode += hexSegment
-  }
-
-  return hexCode
-}
 
 // {
 //   "annotations": [

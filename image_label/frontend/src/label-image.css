@@ -1,3 +1,37 @@
+.parent {
+  display: flex;
+  padding: 10px;
+  gap: 10px;
+}
+
+@media only screen and (max-width: 1000px) {
+  .parent {
+    flex-direction: column-reverse;
+  }
+}
+
+.dataViewer {
+  min-width: 200px;
+}
+
+.menu {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  padding: 10px;
+}
+
+.menu > button {
+  border: none;
+  background-color: #272727;
+  color: #ffffff;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+}
 .selectItem {
   width: 100%;
   border: 0px;
@@ -113,16 +147,17 @@
 }
 
 .downloadButton {
-  border: none;
+  border: 1px solid #878787;
   margin: 10px 0;
-  background-color: rgb(21, 21, 21);
-  color: #4caf50;
+  background-color: rgb(31, 31, 31);
+  color: #ffffff;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .downloadButton:hover {
   background-color: rgb(21, 21, 21);
   color: #3e8e41;
-  cursor: pointer;
 }
 
 .downloadButton:focus {
@@ -146,19 +181,74 @@
 .dataHolder {
   display: flex;
   flex-direction: column;
+  max-width: 500px;
+
+  border-radius: 20px;
+  min-width: 300px;
+}
+.dataItem:first-child {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.dataItem:last-child {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .dataItem {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
+  border: 1px solid #000;
   padding: 5px;
-  gap: 0.8rem;
-  font-size: 0.8rem;
+  min-height: 50px; /* set height according to your need */
 }
 
-.dataItemLabel {
+.dataItemSno {
+  flex: 1;
+  text-align: center;
+  min-width: 50px; /* set width according to your need */
 }
-
+.dataItemLabel,
 .dataItemValue {
+  flex: 3;
+  text-align: center;
+  min-width: 50px; /* set width according to your need */
+}
+
+.dataItem:nth-child(odd) {
+  background-color: #1c1c1c;
+}
+
+.dataItem:nth-child(even) {
+  background-color: #272727;
+}
+
+.label-text-for-all {
+  position: absolute;
+  bottom: 0;
+  margin: 0;
+  padding: 0.3rem;
+  transform: translateY(100%);
+  font-size: 0.8rem;
+  background-color: #33333374;
+  border-radius: 2px;
+}
+.previewHolder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  background-color: rgba(12, 13, 30, 0.591);
+  backdrop-filter: blur(10px);
+
+  width: 100%;
+  height: 100%;
+}
+.previewHolder img {
+  width: 100%;
+  height: 80%;
+  object-fit: contain;
 }
